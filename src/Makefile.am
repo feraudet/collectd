@@ -1,7 +1,4 @@
 SUBDIRS = libcollectdclient
-if BUILD_WITH_OWN_LIBIPTC
-SUBDIRS += owniptc
-endif
 if BUILD_WITH_OWN_LIBOCONFIG
 SUBDIRS += liboconfig
 endif
@@ -488,12 +485,7 @@ pkglib_LTLIBRARIES += iptables.la
 iptables_la_SOURCES = iptables.c
 iptables_la_CPPFLAGS = $(AM_CPPFLAGS) $(BUILD_WITH_LIBIPTC_CPPFLAGS)
 iptables_la_LDFLAGS = -module -avoid-version $(BUILD_WITH_LIBIPTC_LDFLAGS)
-if BUILD_WITH_OWN_LIBIPTC
-iptables_la_LIBADD  = owniptc/libiptc.la
-iptables_la_DEPENDENCIES = owniptc/libiptc.la
-else
 iptables_la_LIBADD = -liptc
-endif
 collectd_LDADD += "-dlopen" iptables.la
 collectd_DEPENDENCIES += iptables.la
 endif
@@ -641,6 +633,14 @@ mbmon_la_LIBADD += -lsocket
 endif
 collectd_LDADD += "-dlopen" mbmon.la
 collectd_DEPENDENCIES += mbmon.la
+endif
+
+if BUILD_PLUGIN_MD
+pkglib_LTLIBRARIES += md.la
+md_la_SOURCES = md.c
+md_la_LDFLAGS = -module -avoid-version
+collectd_LDADD += "-dlopen" md.la
+collectd_DEPENDENCIES += md.la
 endif
 
 if BUILD_PLUGIN_MEMCACHEC
@@ -1294,6 +1294,15 @@ collectd_LDADD += "-dlopen" wireless.la
 collectd_DEPENDENCIES += wireless.la
 endif
 
+if BUILD_PLUGIN_WRITE_GRAPHITE
+pkglib_LTLIBRARIES += write_graphite.la
+write_graphite_la_SOURCES = write_graphite.c \
+			utils_format_json.c utils_format_json.h
+write_graphite_la_LDFLAGS = -module -avoid-version
+collectd_LDADD += "-dlopen" write_graphite.la
+collectd_DEPENDENCIES += write_graphite.la
+endif
+
 if BUILD_PLUGIN_WRITE_HTTP
 pkglib_LTLIBRARIES += write_http.la
 write_http_la_SOURCES = write_http.c \
@@ -1307,6 +1316,16 @@ write_http_la_CFLAGS += $(BUILD_WITH_LIBCURL_CFLAGS)
 write_http_la_LIBADD += $(BUILD_WITH_LIBCURL_LIBS)
 endif
 collectd_DEPENDENCIES += write_http.la
+endif
+
+if BUILD_PLUGIN_WRITE_MONGODB
+pkglib_LTLIBRARIES += write_mongodb.la
+write_mongodb_la_SOURCES = write_mongodb.c
+write_mongodb_la_CPPFLAGS = $(AM_CPPFLAGS) $(BUILD_WITH_LIBMONGOC_CPPFLAGS)
+write_mongodb_la_LDFLAGS = -module -avoid-version $(BUILD_WITH_LIBMONGOC_LDFLAGS)
+write_mongodb_la_LIBADD = -lmongoc
+collectd_LDADD += "-dlopen" write_mongodb.la
+collectd_DEPENDENCIES += write_mongodb.la
 endif
 
 if BUILD_PLUGIN_WRITE_REDIS

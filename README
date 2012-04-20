@@ -140,6 +140,10 @@ Features
       Motherboard sensors: temperature, fanspeed and voltage information,
       using mbmon(1).
 
+    - md
+      Linux software-RAID device information (number of active, failed, spare
+      and missing disks).
+
     - memcachec
       Query and parse data from a memcache daemon (memcached).
 
@@ -357,6 +361,9 @@ Features
       One can query the values from the unixsock plugin whenever they're
       needed. Please read collectd-unixsock(5) for a description on how that's
       done.
+
+    - write_graphite
+      Sends data to Carbon, the storage layer of Graphite.
 
     - write_http
       Sends the values collected by collectd to a web-server using HTTP POST
